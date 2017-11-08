@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -66,10 +65,7 @@ public abstract class BaseContainerView extends FrameLayout
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && this instanceof AllAppsContainerView) {
             mBaseDrawable = new ColorDrawable();
         } else {
-            TypedArray a = context.obtainStyledAttributes(attrs,
-                    R.styleable.BaseContainerView, defStyleAttr, 0);
-            mBaseDrawable = a.getDrawable(R.styleable.BaseContainerView_revealBackground);
-            a.recycle();
+            mBaseDrawable = new ColorDrawable();
         }
     }
 

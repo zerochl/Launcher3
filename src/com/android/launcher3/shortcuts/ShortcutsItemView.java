@@ -20,7 +20,6 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Point;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,7 +30,6 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
-import com.google.android.apps.nexuslauncher.R;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
@@ -41,6 +39,7 @@ import com.android.launcher3.popup.PopupItemView;
 import com.android.launcher3.popup.PopupPopulator;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.google.android.apps.nexuslauncher.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,7 +77,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mShortcutsLayout = findViewById(R.id.deep_shortcuts);
+        //mShortcutsLayout = findViewById(R.id.deep_shortcuts);
     }
 
     @Override
@@ -248,10 +247,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
 
     @Override
     public int getArrowColor(boolean isArrowAttachedToBottom) {
-        return ContextCompat.getColor(getContext(),
-                isArrowAttachedToBottom || mSystemShortcutIcons == null
-                        ? R.color.popup_background_color
-                        : R.color.popup_header_background_color);
+        return 0;
     }
 
     @Override

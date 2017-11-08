@@ -21,7 +21,6 @@ import android.app.Notification;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,12 +28,12 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.ItemInfo;
-import com.google.android.apps.nexuslauncher.R;
 import com.android.launcher3.anim.PillHeightRevealOutlineProvider;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.popup.PopupItemView;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.google.android.apps.nexuslauncher.R;
 
 import java.util.List;
 
@@ -97,8 +96,7 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
         if (palette != null) {
             if (mNotificationHeaderTextColor == Notification.COLOR_DEFAULT) {
                 mNotificationHeaderTextColor =
-                        IconPalette.resolveContrastColor(getContext(), palette.dominantColor,
-                            getResources().getColor(R.color.popup_header_background_color));
+                        IconPalette.resolveContrastColor(getContext(), palette.dominantColor, 0);
             }
             mHeaderCount.setTextColor(mNotificationHeaderTextColor);
         }
@@ -164,9 +162,7 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
 
     @Override
     public int getArrowColor(boolean isArrowAttachedToBottom) {
-        return ContextCompat.getColor(getContext(), isArrowAttachedToBottom
-                ? R.color.popup_background_color
-                : R.color.popup_header_background_color);
+        return 0;
     }
 
     @Override

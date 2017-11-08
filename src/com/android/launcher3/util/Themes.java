@@ -68,4 +68,11 @@ public class Themes {
         target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
                 Color.blue(color) / 255f, Color.alpha(color) / 255f);
     }
+
+    public static boolean getAttrBoolean(final Context context, final int n) {
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(new int[] { n });
+        final boolean boolean1 = obtainStyledAttributes.getBoolean(0, false);
+        obtainStyledAttributes.recycle();
+        return boolean1;
+    }
 }

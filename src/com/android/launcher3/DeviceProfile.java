@@ -32,7 +32,6 @@ import android.widget.FrameLayout;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.badge.BadgeRenderer;
-import com.android.launcher3.config.FeatureFlags;
 import com.google.android.apps.nexuslauncher.R;
 
 import java.util.ArrayList;
@@ -115,7 +114,7 @@ public class DeviceProfile {
     public int hotseatIconSizePx;
     public int hotseatBarHeightPx;
     private int hotseatBarTopPaddingPx;
-    private int hotseatBarBottomPaddingPx;
+    public int hotseatBarBottomPaddingPx;
     private int hotseatLandGutterPx;
 
     // All apps
@@ -534,12 +533,12 @@ public class DeviceProfile {
         workspace.setPageSpacing(getWorkspacePageSpacing());
 
         // Only display when enabled
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
+        /*if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
             View qsbContainer = launcher.getQsbContainer();
             lp = (FrameLayout.LayoutParams) qsbContainer.getLayoutParams();
             lp.topMargin = mInsets.top + workspacePadding.top;
             qsbContainer.setLayoutParams(lp);
-        }
+        }*/
 
         // Layout the hotseat
         Hotseat hotseat = (Hotseat) launcher.findViewById(R.id.hotseat);

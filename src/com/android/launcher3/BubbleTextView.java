@@ -17,10 +17,10 @@
 package com.android.launcher3;
 
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -30,7 +30,6 @@ import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Property;
-import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -49,6 +48,7 @@ import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
+import com.google.android.apps.nexuslauncher.R;
 
 import java.text.NumberFormat;
 
@@ -138,7 +138,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         mLauncher = Launcher.getLauncher(context);
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
-        TypedArray a = context.obtainStyledAttributes(attrs,
+        /*TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
         mCustomShadowsEnabled = a.getBoolean(R.styleable.BubbleTextView_customShadows, false);
         mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
@@ -162,7 +162,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
 
         mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
                 defaultIconSize);
-        a.recycle();
+        a.recycle();*/
+
+        mCustomShadowsEnabled = false;
+        mLayoutHorizontal = true;
+        mDeferShadowGenerationOnTouch = true;
+        mCenterVertically = true;
+        mIconSize = 30;
 
         if (mCustomShadowsEnabled) {
             // Draw the background itself as the parent is drawn twice.
@@ -391,6 +397,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         return result;
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     public void draw(Canvas canvas) {
         if (!mCustomShadowsEnabled) {
@@ -446,7 +453,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
      * Draws the icon badge in the top right corner of the icon bounds.
      * @param canvas The canvas to draw to.
      */
-    private void drawBadgeIfNecessary(Canvas canvas) {
+    protected void drawBadgeIfNecessary(Canvas canvas) {
         if (!mForceHideBadge && (hasBadge() || mBadgeScale > 0)) {
             getIconBounds(mTempIconBounds);
             mTempSpaceForBadgeOffset.set((getWidth() - mIconSize) / 2, getPaddingTop());
@@ -457,6 +464,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
                     mTempSpaceForBadgeOffset);
             canvas.translate(-scrollX, -scrollY);
         }
+    }
+
+    protected void drawWithoutBadge(final Canvas canvas) {
+        super.onDraw(canvas);
     }
 
     public void forceHideBadge(boolean forceHideBadge) {
@@ -671,5 +682,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
      */
     public interface BubbleTextShadowHandler {
         void setPressedIcon(BubbleTextView icon, Bitmap background);
+    }
+
+    public int getIconSize() {
+        return this.mIconSize;
     }
 }

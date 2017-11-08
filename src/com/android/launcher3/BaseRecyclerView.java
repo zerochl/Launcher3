@@ -166,7 +166,7 @@ public abstract class BaseRecyclerView extends RecyclerView
     /**
      * Returns the height of the fast scroll bar
      */
-    protected int getScrollbarTrackHeight() {
+    public int getScrollbarTrackHeight() {
         return getHeight();
     }
 
@@ -234,7 +234,7 @@ public abstract class BaseRecyclerView extends RecyclerView
     /**
      * @return whether fast scrolling is supported in the current state.
      */
-    protected boolean supportsFastScrolling() {
+    public boolean supportsFastScrolling() {
         return true;
     }
 
@@ -250,16 +250,16 @@ public abstract class BaseRecyclerView extends RecyclerView
      * Maps the touch (from 0..1) to the adapter position that should be visible.
      * <p>Override in each subclass of this base class.
      */
-    protected abstract String scrollToPositionAtProgress(float touchFraction);
+    public abstract String scrollToPositionAtProgress(float touchFraction);
 
     /**
      * Updates the bounds for the scrollbar.
      * <p>Override in each subclass of this base class.
      */
-    protected abstract void onUpdateScrollbar(int dy);
+    public abstract void onUpdateScrollbar(int dy);
 
     /**
      * <p>Override in each subclass of this base class.
      */
-    protected void onFastScrollCompleted() {}
+    public void onFastScrollCompleted() {}
 }

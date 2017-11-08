@@ -48,7 +48,7 @@ public class InfoDropTarget extends UninstallDropTarget {
         // Get the hover color
         mHoverColor = Themes.getColorAccent(getContext());
 
-        setDrawable(R.drawable.ic_info_launcher);
+        //setDrawable(R.drawable.ic_info_launcher);
     }
 
     @Override
