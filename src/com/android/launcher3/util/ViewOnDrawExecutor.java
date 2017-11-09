@@ -16,12 +16,10 @@
 
 package com.android.launcher3.util;
 
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnAttachStateChangeListener;
 import android.view.ViewTreeObserver.OnDrawListener;
 
-import com.android.launcher3.DeferredHandler;
 import com.android.launcher3.Launcher;
 
 import java.util.ArrayList;

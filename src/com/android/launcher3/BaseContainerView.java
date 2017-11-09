@@ -118,11 +118,14 @@ public abstract class BaseContainerView extends FrameLayout
 
         DeviceProfile grid = Launcher.getLauncher(context).getDeviceProfile();
         int[] padding = grid.getContainerPadding();
-        paddingLeft = padding[0] + grid.edgeMarginPx;
-        paddingRight = padding[1] + grid.edgeMarginPx;
         if (!grid.isVerticalBarLayout()) {
-            paddingTop = paddingBottom = grid.edgeMarginPx;
+            paddingBottom = grid.edgeMarginPx;
+            paddingLeft = padding[0] + grid.edgeMarginPx;
+            paddingRight = padding[1] + grid.edgeMarginPx;
+            paddingTop = paddingBottom;
         } else {
+            paddingLeft = padding[0];
+            paddingRight = padding[1];
             paddingTop = paddingBottom = 0;
         }
         updateBackground(paddingLeft, paddingTop, paddingRight, paddingBottom);
@@ -163,10 +166,6 @@ public abstract class BaseContainerView extends FrameLayout
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         return handleTouchEvent(ev);
-    }
-
-    public void setRevealDrawableColor(int color) {
-        ((ColorDrawable) mBaseDrawable).setColor(color);
     }
 
     public final View getContentView() {
