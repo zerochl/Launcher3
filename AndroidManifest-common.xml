@@ -31,7 +31,7 @@
     with some minor changed based on the derivative app.
     -->
     <permission
-        android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
+        android:name="com.zero.launcher3.permission.INSTALL_SHORTCUT"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="dangerous"
         android:label="@string/permlab_install_shortcut"
@@ -59,7 +59,7 @@
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
             android:name="com.android.launcher3.InstallShortcutReceiver"
-            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT"
+            android:permission="com.zero.launcher3.permission.INSTALL_SHORTCUT"
             android:enabled="@bool/enable_install_shortcut_api" >
             <intent-filter>
                 <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />

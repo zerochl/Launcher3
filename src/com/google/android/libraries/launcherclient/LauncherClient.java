@@ -21,6 +21,8 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.android.launcher3.config.LauncherClientConfig;
+
 public class LauncherClient {
     private static AppServiceConnection sApplicationConnection;
 
@@ -66,7 +68,7 @@ public class LauncherClient {
     }
 
     public LauncherClient(Activity activity, LauncherClientCallbacks callbacks, boolean overlayEnabled) {
-        this(activity, callbacks, "com.google.android.googlequicksearchbox", overlayEnabled);
+        this(activity, callbacks, LauncherClientConfig.CLIENT_PACKAGE, overlayEnabled);
     }
 
     private void applyWindowToken() {
@@ -109,7 +111,7 @@ public class LauncherClient {
             .appendQueryParameter("v", Integer.toString(5))
             .build();
 
-        return new Intent("com.android.launcher3.WINDOW_OVERLAY")
+        return new Intent(LauncherClientConfig.CLIENT_ACTION)
             .setPackage(targetPackage)
             .setData(uri);
     }
