@@ -371,6 +371,7 @@ public class Launcher extends BaseActivity
         LauncherAppState app = LauncherAppState.getInstance(this);
 
         // Load configuration-specific DeviceProfile
+        //初始化手机固件信息对象DeviceProfile
         mDeviceProfile = app.getInvariantDeviceProfile().getDeviceProfile(this);
         if (isInMultiWindowModeCompat()) {
             Display display = getWindowManager().getDefaultDisplay();
@@ -385,11 +386,11 @@ public class Launcher extends BaseActivity
         mModelWriter = mModel.getWriter(mDeviceProfile.isVerticalBarLayout());
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
-
+        //初始化拖拽管理器DragController
         mDragController = new DragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
         mStateTransitionAnimation = new LauncherStateTransitionAnimation(this, mAllAppsController);
-
+        //初始化小部件管理器
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
 
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
@@ -400,13 +401,16 @@ public class Launcher extends BaseActivity
         // LauncherModel load.
         mPaused = false;
 
+        //加载布局
         mLauncherView = getLayoutInflater().inflate(R.layout.launcher, null);
-
+        //初始化桌面各个控件
         setupViews();
+        //设置各个控件的位置
         mDeviceProfile.layout(this, false /* notifyListeners */);
         mExtractedColors = new ExtractedColors();
+        //TODO 暂时没看明白是干啥的
         loadExtractedColorsAndColorItems();
-
+        //长按APP之后显示应用信息的提供者
         mPopupDataProvider = new PopupDataProvider(this);
 
         ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
@@ -426,6 +430,7 @@ public class Launcher extends BaseActivity
         if (savedInstanceState != null) {
             currentScreen = savedInstanceState.getInt(RUNTIME_STATE_CURRENT_SCREEN, currentScreen);
         }
+        //当所有信息初始化完成后，就开始调用mModel.startLoader方法来加载应用数据
         if (!mModel.startLoader(currentScreen)) {
             // If we are not binding synchronously, show a fade in animation when
             // the first page bind completes.
@@ -1007,6 +1012,7 @@ public class Launcher extends BaseActivity
         mOnResumeState = State.NONE;
 
         mPaused = false;
+        //Activity从pause状态恢复会走startLoader
         if (mOnResumeNeedsLoad) {
             setWorkspaceLoading(true);
             mModel.startLoader(getCurrentWorkspaceScreen());
@@ -1348,22 +1354,26 @@ public class Launcher extends BaseActivity
         // Setup the overview panel
         setupOverviewPanel();
 
-        // Setup the workspace
+        //TODO  Setup the workspace 暴露太多设置，长按操作也应该封装
         mWorkspace.setHapticFeedbackEnabled(false);
         mWorkspace.setOnLongClickListener(this);
         mWorkspace.setup(mDragController);
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
         // default state, otherwise we will update to the wrong offsets in RTL
         mWorkspace.lockWallpaperToDefaultPage();
+        //绑定and初始化第一个界面，参数传null，表示qsb由方法内自己创建
         mWorkspace.bindAndInitFirstWorkspaceScreen(null /* recycled qsb */);
+        //TODO 此处用法不明不白，完全可以放到setup中设置，或者找个地方统一设置
         mDragController.addDragListener(mWorkspace);
 
-        // Get the search/delete/uninstall bar
+        // Get the search/delete/uninstall bar 顶部图片拖动目标bar，现有三种，删除、appinfo、未安装
         mDropTargetBar = (DropTargetBar) mDragLayer.findViewById(R.id.drop_target_bar);
 
-        // Setup Apps and Widgets
+        // Setup Apps and Widgets 上滑出现的所有app显示的view，可以与MIUI一样设置不显示
         mAppsView = (AllAppsContainerView) findViewById(R.id.apps_view);
+        //编辑页面点击小组件后打开，小组件列表
         mWidgetsView = (WidgetsContainerView) findViewById(R.id.widgets_view);
+        //设置app搜索控制
         if (mLauncherCallbacks != null && mLauncherCallbacks.getAllAppsSearchBarController() != null) {
             mAppsView.setSearchBarController(mLauncherCallbacks.getAllAppsSearchBarController());
         } else {
@@ -1374,7 +1384,7 @@ public class Launcher extends BaseActivity
         mDragController.setMoveTarget(mWorkspace);
         mDragController.addDropTarget(mWorkspace);
         mDropTargetBar.setup(mDragController);
-
+        //配置允许上拉显示所有app界面
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
             mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
         }
@@ -1384,20 +1394,25 @@ public class Launcher extends BaseActivity
         }
     }
 
+    /**
+     * 设置编辑界面
+     */
     private void setupOverviewPanel() {
         mOverviewPanel = (ViewGroup) findViewById(R.id.overview_panel);
 
-        // Bind wallpaper button actions
+        // Bind wallpaper button actions,壁纸按钮
         View wallpaperButton = findViewById(R.id.wallpaper_button);
+        //此处可优化
         new OverviewButtonClickListener(ControlType.WALLPAPER_BUTTON) {
             @Override
             public void handleViewClick(View view) {
                 onClickWallpaperPicker(view);
             }
         }.attachTo(wallpaperButton);
+        //添加触摸反馈，此处可优化
         wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
-        // Bind widget button actions
+        // Bind widget button actions 小部件按钮
         mWidgetsButton = findViewById(R.id.widget_button);
         new OverviewButtonClickListener(ControlType.WIDGETS_BUTTON) {
             @Override
@@ -1407,7 +1422,7 @@ public class Launcher extends BaseActivity
         }.attachTo(mWidgetsButton);
         mWidgetsButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
-        // Bind settings actions
+        // Bind settings actions 设置按钮
         View settingsButton = findViewById(R.id.settings_button);
         boolean hasSettings = hasSettings();
         if (hasSettings) {
@@ -1421,7 +1436,7 @@ public class Launcher extends BaseActivity
         } else {
             settingsButton.setVisibility(View.GONE);
         }
-
+        //初始隐藏
         mOverviewPanel.setAlpha(0f);
     }
 

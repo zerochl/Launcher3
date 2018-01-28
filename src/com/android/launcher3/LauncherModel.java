@@ -178,29 +178,111 @@ public class LauncherModel extends BroadcastReceiver
     private final UserManagerCompat mUserManager;
 
     public interface Callbacks {
+        /**
+         * 当Launcher.java类的Activity处于onPause的时候，如果重新恢复，需要调用onResume，此时需要在onResume调用这个接口，恢复Launcher数据。
+         * @return
+         */
         public boolean setLoadOnResume();
+        /**
+         * 获取屏幕序号（0~4）
+         * @return
+         */
         public int getCurrentWorkspaceScreen();
         public void clearPendingBinds();
+        /**
+         * 通知Launcher开始加载数据。清空容器数据，重新加载
+         */
         public void startBinding();
+
+        /**
+         * 加载App shortcut、Live Folder、widget到Launcher相关容器
+         * @param shortcuts
+         * @param start
+         * @param end
+         * @param forceAnimateIcons
+         */
         public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end,
                               boolean forceAnimateIcons);
+
+        /**
+         * 加载workspace中的page
+         * @param orderedScreenIds
+         */
         public void bindScreens(ArrayList<Long> orderedScreenIds);
+        /**
+         * 当前page数据加载完成调用
+         * @param executor
+         */
         public void finishFirstPageBind(ViewOnDrawExecutor executor);
+        /**
+         * 其他page数据加载完成调用
+         */
         public void finishBindingItems();
+        /**
+         * workspace加载widget
+         * @param info
+         */
         public void bindAppWidget(LauncherAppWidgetInfo info);
+
+        /**
+         * workspace加载app
+         * @param apps
+         */
         public void bindAllApplications(ArrayList<AppInfo> apps);
+
+        /**
+         * 通知Launcher新安装了一个APP，更新数据。
+         * @param newScreens
+         * @param addNotAnimated
+         * @param addAnimated
+         * @param addedApps
+         */
         public void bindAppsAdded(ArrayList<Long> newScreens,
                                   ArrayList<ItemInfo> addNotAnimated,
                                   ArrayList<ItemInfo> addAnimated,
                                   ArrayList<AppInfo> addedApps);
+
+        /**
+         * 通知Launcher一个APP更新了。（覆盖安装）
+         * @param apps
+         */
         public void bindAppsUpdated(ArrayList<AppInfo> apps);
+
+        /**
+         * 通知Launcher shortcut信息改变
+         * @param updated
+         * @param removed
+         * @param user
+         */
         public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated,
                 ArrayList<ShortcutInfo> removed, UserHandle user);
+
+        /**
+         * 重新加载widget
+         * @param widgets
+         */
         public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
+
+        /**
+         * 控件位置更新？（可能是的，没有仔细看代码）
+         * @param updates
+         */
         public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
+
+        /**
+         * 等待onResume时，把要删除package list从workspace和appsCustomizeContent里面删除掉，同时回调告诉DragController（onAppsRemoved）
+         * @param packageNames
+         * @param components
+         * @param user
+         */
         public void bindWorkspaceComponentsRemoved(
                 HashSet<String> packageNames, HashSet<ComponentName> components,
                 UserHandle user);
+
+        /**
+         * 应用被删除
+         * @param appInfos
+         */
         public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
         public void notifyWidgetProvidersChanged();
         public void bindAllWidgets(MultiHashMap<PackageItemInfo, WidgetItem> widgets);
@@ -542,6 +624,7 @@ public class LauncherModel extends BroadcastReceiver
         InstallShortcutReceiver.enableInstallQueue();
         synchronized (mLock) {
             // Don't bother to start the thread if we know it's not going to do anything
+            //如果已经知道什么都不做，不需要去启动线程(即callback压根就没有设置)
             if (mCallbacks != null && mCallbacks.get() != null) {
                 final Callbacks oldCallbacks = mCallbacks.get();
                 // Clear any pending bind-runnables from the synchronized load process.
@@ -552,6 +635,8 @@ public class LauncherModel extends BroadcastReceiver
                 });
 
                 // If there is already one running, tell it to stop.
+                //防止重复调用，设置线程中途或未开始暂停
+                //TODO 确认是否真有多次调用的可能？
                 stopLoaderLocked();
                 mLoaderTask = new LoaderTask(mApp.getContext(), synchronousBindPage);
                 if (synchronousBindPage != PagedView.INVALID_RESTORE_PAGE
@@ -1468,8 +1553,10 @@ public class LauncherModel extends BroadcastReceiver
 
             // Bind the widgets, one at a time
             N = appWidgets.size();
+            Log.e("HongLi","Widget size:" + N);
             for (int i = 0; i < N; i++) {
                 final LauncherAppWidgetInfo widget = appWidgets.get(i);
+                Log.e("HongLi","bindAppWidget name:" + widget.toString());
                 final Runnable r = new Runnable() {
                     public void run() {
                         Callbacks callbacks = tryGetCallbacks(oldCallbacks);
@@ -1552,6 +1639,7 @@ public class LauncherModel extends BroadcastReceiver
 
             Executor mainExecutor = new DeferredMainThreadExecutor();
             // Load items on the current page.
+            Log.e("HongLi","load current workspace");
             bindWorkspaceItems(oldCallbacks, currentWorkspaceItems, currentAppWidgets, mainExecutor);
 
             // In case of validFirstPage, only bind the first screen, and defer binding the
@@ -1573,6 +1661,7 @@ public class LauncherModel extends BroadcastReceiver
                 }
             });
 
+            Log.e("HongLi","load other workspace");
             bindWorkspaceItems(oldCallbacks, otherWorkspaceItems, otherAppWidgets, deferredExecutor);
 
             // Tell the workspace that we're done binding items

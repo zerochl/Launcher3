@@ -90,11 +90,13 @@ public class LauncherAppState {
         if (TestingUtils.MEMORY_DUMP_ENABLED) {
             TestingUtils.startTrackingMemory(mContext);
         }
-
+        //初始化图标管理工具
         mInvariantDeviceProfile = new InvariantDeviceProfile(mContext);
+        //初始化图标管理工具
         mIconCache = new IconCache(mContext, mInvariantDeviceProfile);
+        //初始化Widget加载混存工具
         mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
-
+        //初始化广播
         mModel = new LauncherModel(this, mIconCache,
                 new NexusAppFilter());
 
@@ -114,7 +116,7 @@ public class LauncherAppState {
             // TODO: add a broadcast entry to the manifest for pre-N.
             filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
         }
-
+        //注册广播
         mContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(mContext).enableAndResetCache();
         new ConfigMonitor(mContext).register();
